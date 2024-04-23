@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./todo.css";
-// import { GiNotebook } from "react-icons/gi";
+import { GiNotebook } from "react-icons/gi";
 import { IoSearch } from "react-icons/io5";
 
 // import Edit from ".."
@@ -76,7 +76,7 @@ const Todo = () => {
         }}
       >
         <div className="input-container">
-          {/* <GiNotebook style={{ fontSize: "20px", marginRight: "10px" }} /> */}
+          <GiNotebook style={{ fontSize: "20px", marginRight: "10px" }} />
           <input
             type="text"
             value={invalue}
