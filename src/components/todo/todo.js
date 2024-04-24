@@ -15,14 +15,14 @@ const Todo = () => {
     }
   };
   const [currelm, setCurrelm] = useState(getlocacstorageItem());
-  const [editindex, setEditindex] = useState(null);
-  const [invalue, setInvalue] = useState("");
+  const [editindex, setEditindex] = useState();
+  const [invalue, setInvalue] = useState();
+  console.log(invalue);
   const [filteredData, setFilteredData] = useState([]);
   const [filtervalue, setFilteredvalue] = useState("");
-
+  console.log(currelm);
   useEffect(() => {
     localStorage.setItem("Data", JSON.stringify(currelm));
-    console.log("hello");
   }, [currelm]);
   const submitHandler = (e) => {
     if (!invalue.trim()) {
@@ -45,12 +45,15 @@ const Todo = () => {
   };
 
   const deleteitem = (index) => {
+    debugger;
     const updatedFields = [...currelm];
     updatedFields.splice(index, 1);
     setCurrelm(updatedFields);
+    setFilteredData(filteredData.filter((item, idx) => idx !== index));
   };
 
   const Edititem = (index) => {
+    debugger;
     setEditindex(index);
     setInvalue(currelm[index]);
   };
@@ -64,122 +67,104 @@ const Todo = () => {
     );
     setFilteredData(filtered);
   };
+  const removeAllItems = () => {
+    setCurrelm([]);
+    setFilteredData([]); // Reset filteredData as well
+  };
   return (
-    <div className="main">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "600px",
-        }}
-      >
-        <div className="input-container">
-          <GiNotebook style={{ fontSize: "20px", marginRight: "10px" }} />
-          <input
-            type="text"
-            value={invalue}
-            style={{
-              border: "none",
-              width: "100%",
-              height: "40px",
-              fontSize: "16px",
-            }}
-            onChange={(e) => {
-              setInvalue(e.target.value);
-            }}
-          ></input>
+    <>
+      <div className="container">
+        <div className="d-flex flex-row justify-content-center gap-2  mt-5 mx-auto">
+          <div className="input-group h-25 w-auto">
+            <span className="input-group-text">
+              <GiNotebook />
+            </span>
 
-          {editindex ? (
-            <i
-              className="fa fa-solid fa-edit"
-              style={{ fontSize: "20px" }}
-              onClick={() => submitHandler()}
-            ></i>
-          ) : (
-            <i
-              className="fa fa-solid fa-plus add-btn"
-              onClick={() => submitHandler()}
-            ></i>
-          )}
-        </div>
-        <div className="input-container">
-          <IoSearch style={{ fontSize: "20px", marginRight: "10px" }} />
-          <input
-            type="text"
-            value={filtervalue}
-            style={{
-              border: "none",
-              width: "100%",
-              height: "40px",
-              fontSize: "16px",
-            }}
-            onChange={filterdata}
-          ></input>
-        </div>
-        <div className="btn-removeall">
-          <button
-            className="rm-btn"
-            onClick={() => {
-              setCurrelm([]);
-            }}
-          >
-            Clear All
-          </button>
-        </div>
+            <input
+              type="text"
+              className="form-control"
+              value={invalue}
+              aria-label="Amount (to the nearest dollar)"
+              onChange={(e) => {
+                setInvalue(e.target.value);
+              }}
+            />
 
-        {filteredData.length > 0
-          ? filteredData.map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  width: "100%",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                }}
-              >
-                <div className="eachItem">
-                  <p>{item}</p>
-                  <div className="todo-btn">
-                    <i
-                      className="fa fa-solid fa-edit"
-                      onClick={() => Edititem(index)}
-                    ></i>
-                    <i
-                      className="fa fa-solid fa-trash"
-                      onClick={() => deleteitem(index)}
-                    ></i>
-                  </div>
-                </div>
-              </div>
-            ))
-          : currelm.map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  width: "100%",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                }}
-              >
-                <div className="eachItem">
-                  <p>{item}</p>
-                  <div className="todo-btn">
-                    <i
-                      className="fa fa-solid fa-edit"
-                      onClick={() => Edititem(index)}
-                    ></i>
-                    <i
-                      className="fa fa-solid fa-trash"
-                      onClick={() => deleteitem(index)}
-                    ></i>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <span className="input-group-text">
+              {editindex ? (
+                <i
+                  className="fa fa-solid fa-edit"
+                  style={{ fontSize: "20px" }}
+                  onClick={() => submitHandler()}
+                ></i>
+              ) : (
+                <i
+                  className="fa fa-solid fa-plus add-btn"
+                  onClick={() => submitHandler()}
+                ></i>
+              )}
+            </span>
+          </div>
+          <div className=" w-auto">
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={removeAllItems}
+            >
+              Remove All
+            </button>
+          </div>
+
+          <div className="input-group h-25 w-auto">
+            <span className="input-group-text">
+              <IoSearch />
+            </span>
+
+            <input
+              type="text"
+              className="form-control"
+              value={filtervalue}
+              onChange={filterdata}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+      <div className="container ">
+        <div className=" mt-5 d-flex flex-row flex-wrap">
+          {filteredData.length > 0
+            ? filteredData.map((item, index) => (
+                <div className=" eachItem mx-1 my-1" key={index}>
+                  <p>{item}</p>
+                  <div className="todo-btn ">
+                    <i
+                      className="fa fa-solid fa-edit"
+                      onClick={() => Edititem(index)}
+                    ></i>
+                    <i
+                      className="fa fa-solid fa-trash"
+                      onClick={() => deleteitem(index)}
+                    ></i>
+                  </div>
+                </div>
+              ))
+            : currelm.map((item, index) => (
+                <div className=" eachItem mx-1 my-1" key={index}>
+                  <p>{item}</p>
+                  <div className="todo-btn">
+                    <i
+                      className="fa fa-solid fa-edit"
+                      onClick={() => Edititem(index)}
+                    ></i>
+                    <i
+                      className="fa fa-solid fa-trash"
+                      onClick={() => deleteitem(index)}
+                    ></i>
+                  </div>
+                </div>
+              ))}
+        </div>
+      </div>
+    </>
   );
 };
 
